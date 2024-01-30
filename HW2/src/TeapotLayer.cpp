@@ -55,7 +55,7 @@ void TeapotLayer::OnUpdate(const Timestep ts) {
     m_Shader->SetMat4("u_ViewProjection",
                       m_OrbitCamera.GetViewProjection());
     glm::vec3 center = m_Model->meshes[0].m_Center;
-    LOG_INFO("CENTER {0} {1} {2}", center.x, center.y, center.z);
+    //LOG_INFO("CENTER {0} {1} {2}", center.x, center.y, center.z);
 
     const glm::mat4 model = glm::translate(glm::mat4(1.0f), -center);
 

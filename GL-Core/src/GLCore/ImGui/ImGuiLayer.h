@@ -7,23 +7,25 @@
 #include "GLCore/Events/MouseEvent.h"
 
 namespace GLCore {
+    class ImGuiLayer : public Layer {
+    public:
+        ImGuiLayer();
 
-	class ImGuiLayer : public Layer
-	{
-	public:
-		ImGuiLayer();
-		~ImGuiLayer() override = default;
+        ~ImGuiLayer() override = default;
 
-		void OnAttach() override;
-		void OnDetach() override;
+        void OnAttach() override;
 
-		void Begin();
-		void End();
+        void OnDetach() override;
 
-		void OnEvent(Event& event) override;
-		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
-	private:
-		float m_Time = 0.0f;
-	};
+        void Begin();
 
+        void End();
+
+        void OnEvent(Event&event) override;
+
+
+    private:
+        float m_Time = 0.0f;
+        bool m_BlockEvents = true;
+    };
 }

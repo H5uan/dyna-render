@@ -1,29 +1,40 @@
-#version 460 core
+#version 330 core
+out vec4 FragColor;
 
-in vec3 fragNormal;
-in vec3 fragPos;
+in VS_OUT {
+    vec3 FragPos;
+    vec3 Normal;
+} fs_in;
 
-out vec4 fragColor;
+uniform vec3 u_Color;
+uniform vec3 lightPos;
+uniform vec3 viewPos;
+uniform bool blinn;
 
-uniform vec3 u_LightPos;
-uniform vec3 u_LightColor;
-
-uniform vec3 u_ViewPos;
-
-uniform vec3 ObjectColor;
-
-// Material properties
-float ambientStrength = 0.1;
-float specularStrength = 0.5;
-int shininess = 32;// Shininess factor for specular highlight
-
-void main() {
+void main()
+{
+    vec3 color = u_Color;
     // ambient
-    vec3 ambient = ambientStrength * u_LightColor;
-
+    vec3 ambient = 0.05 * color;
     // diffuse
-    vec3 norm = normalize(fragNormal);
-    vec3 lightDir = normalize(u_LightPos- fragPos); // point to light
-    float lightDistance = length(u_LightPos - fragPos);
-    vec3 diffuse = 
+    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+    vec3 normal = normalize(fs_in.Normal);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * color;
+    // specular
+    vec3 viewDir = normalize(viewPos - fs_in.FragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = 0.0;
+    if (blinn)
+    {
+        vec3 halfwayDir = normalize(lightDir + viewDir);
+        spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+    }
+    else
+    {
+        vec3 reflectDir = reflect(-lightDir, normal);
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
+    }
+    vec3 specular = vec3(0.3) * spec;// assuming bright white light color
+    FragColor = vec4(ambient + diffuse + specular, 1.0);
 }

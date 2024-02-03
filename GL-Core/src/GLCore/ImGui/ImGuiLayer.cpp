@@ -72,13 +72,8 @@ namespace GLCore {
         }
     }
 
-    void ImGuiLayer::OnEvent(Event&event) {
-        EventDispatcher dispatcher(event);
-        dispatcher.Dispatch<MouseButtonPressedEvent>(GLCORE_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressed));
-    }
-
-    bool ImGuiLayer::OnMouseButtonPressed(MouseButtonPressedEvent&e) {
-        const ImGuiIO io = ImGui::GetIO();
-        return io.WantCaptureMouse;
+    void ImGuiLayer::OnEvent(Event&e) {
+        const ImGuiIO&io = ImGui::GetIO();
+        e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
     }
 }

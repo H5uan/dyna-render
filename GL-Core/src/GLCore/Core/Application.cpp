@@ -36,6 +36,8 @@ namespace GLCore {
     }
 
     void Application::OnEvent(Event&e) {
+
+
         EventDispatcher dispatcher(e);
         // check if event is window closing event
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));

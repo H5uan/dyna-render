@@ -61,15 +61,15 @@ namespace GLCore::Core::Camera {
         m_InitialMousePosition = mouse;
 
         if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Middle))) {
-            LOG_INFO("Mouse Button Pressed: Middle");
+            //LOG_INFO("Mouse Button Pressed: Middle");
             MousePan(delta);
         }
         else if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Left))) {
-            LOG_INFO("Mouse Button Pressed: Left");
+            //LOG_INFO("Mouse Button Pressed: Left");
             MouseRotate(delta);
         }
         else if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Right))) {
-            LOG_INFO("Mouse Button Pressed: Right");
+            //LOG_INFO("Mouse Button Pressed: Right");
             MouseZoom(delta.y);
         }
 

@@ -29,13 +29,13 @@ void BlinnPhongLayer::OnAttach()
 
 
     m_BlinnPhongShader = new Shader(
-        "../../HW3/assets/shaders/Blinn-Phong.vert.glsl",
-        "../../HW3/assets/shaders/Blinn-Phong.frag.glsl"
+        "../../../HW3/assets/shaders/Blinn-Phong.vert.glsl",
+        "../../../HW3/assets/shaders/Blinn-Phong.frag.glsl"
     );
 
     m_lightCubeShader = new Shader(
-        "../../HW3/assets/shaders/LightCube.vert.glsl",
-        "../../HW3/assets/shaders/LightCube.frag.glsl"
+        "../../../HW3/assets/shaders/LightCube.vert.glsl",
+        "../../../HW3/assets/shaders/LightCube.frag.glsl"
     );
 
     m_Model = new Model(m_ObjFilePath);

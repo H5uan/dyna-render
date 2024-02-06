@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
-set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/extern/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        CACHE STRING "Vcpkg toolchain file")
+
+set(VCPKG_TOOLCHAIN_PATH "${CMAKE_CURRENT_SOURCE_DIR}/extern/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
+if(EXISTS "${VCPKG_TOOLCHAIN_PATH}")
+    set(CMAKE_TOOLCHAIN_FILE "${VCPKG_TOOLCHAIN_PATH}" CACHE STRING "Vcpkg toolchain file")
+else()
+    set(CMAKE_TOOLCHAIN_FILE "" CACHE STRING "Vcpkg toolchain file")
+    message(STATUS "Using system vcpkg toolchain file")
+endif()
 project(6610-project VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)

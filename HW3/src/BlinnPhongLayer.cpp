@@ -13,10 +13,12 @@ using namespace GLCore::Utils;
 
 BlinnPhongLayer::BlinnPhongLayer(std::string obj_file_path): m_ObjFilePath(std::move(obj_file_path)),
                                                              m_OrbitCamera(45.0f, 16.0f / 9.0f, 1.0f, 1000.0f),
-                                                             m_OrthographicCamera(16.0f / 9.0f, true, false) {
+                                                             m_OrthographicCamera(16.0f / 9.0f, true, false)
+{
 }
 
-void BlinnPhongLayer::OnAttach() {
+void BlinnPhongLayer::OnAttach()
+{
     EnableGLDebugging();
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -27,13 +29,13 @@ void BlinnPhongLayer::OnAttach() {
 
 
     m_BlinnPhongShader = new Shader(
-        "../../../HW3/assets/shaders/Blinn-Phong.vert.glsl",
-        "../../../HW3/assets/shaders/Blinn-Phong.frag.glsl"
+        "../../HW3/assets/shaders/Blinn-Phong.vert.glsl",
+        "../../HW3/assets/shaders/Blinn-Phong.frag.glsl"
     );
 
     m_lightCubeShader = new Shader(
-        "../../../HW3/assets/shaders/LightCube.vert.glsl",
-        "../../../HW3/assets/shaders/LightCube.frag.glsl"
+        "../../HW3/assets/shaders/LightCube.vert.glsl",
+        "../../HW3/assets/shaders/LightCube.frag.glsl"
     );
 
     m_Model = new Model(m_ObjFilePath);
@@ -49,11 +51,12 @@ void BlinnPhongLayer::OnAttach() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightCubeEBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), static_cast<void *>(nullptr));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), static_cast<void*>(nullptr));
     glEnableVertexAttribArray(0);
 }
 
-void BlinnPhongLayer::OnDetach() {
+void BlinnPhongLayer::OnDetach()
+{
     delete m_Model;
     delete m_BlinnPhongShader;
     delete m_lightCubeShader;
@@ -62,54 +65,64 @@ void BlinnPhongLayer::OnDetach() {
     glBindVertexArray(0);
 }
 
-void BlinnPhongLayer::OnEvent(Event&event) {
+void BlinnPhongLayer::OnEvent(Event& event)
+{
     m_OrbitCamera.OnEvent(event);
 
     EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<KeyPressedEvent>([&](const KeyPressedEvent&e) {
+    dispatcher.Dispatch<KeyPressedEvent>([&](const KeyPressedEvent& e)
+    {
         if (e.GetKeyCode() == static_cast<int>(KeyCode::F6))
             m_BlinnPhongShader->Reload();
         return false;
     });
 
-    dispatcher.Dispatch<KeyPressedEvent>([&](const KeyPressedEvent&e) {
+    dispatcher.Dispatch<KeyPressedEvent>([&](const KeyPressedEvent& e)
+    {
         if (e.GetKeyCode() == static_cast<int>(KeyCode::LeftControl) || e.GetKeyCode() == static_cast<int>(
-                KeyCode::RightControl)) {
+            KeyCode::RightControl))
+        {
             ctrlPressed = true;
         }
         return false;
     });
-    dispatcher.Dispatch<KeyReleasedEvent>([&](const KeyReleasedEvent&e) {
+    dispatcher.Dispatch<KeyReleasedEvent>([&](const KeyReleasedEvent& e)
+    {
         if (e.GetKeyCode() == static_cast<int>(KeyCode::LeftControl) || e.GetKeyCode() == static_cast<int>(
-                KeyCode::RightControl)) {
+            KeyCode::RightControl))
+        {
             ctrlPressed = false;
         }
         return false;
     });
-    dispatcher.Dispatch<MouseButtonPressedEvent>([&](const MouseButtonPressedEvent&e) {
-        if (ctrlPressed && e.GetMouseButton() == static_cast<int>(MouseButton::Left)) {
+    dispatcher.Dispatch<MouseButtonPressedEvent>([&](const MouseButtonPressedEvent& e)
+    {
+        if (ctrlPressed && e.GetMouseButton() == static_cast<int>(MouseButton::Left))
+        {
             auto [x, y] = Input::GetMousePosition();
             lastMousePos = glm::vec2(x, y);
         }
         return false;
     });
-    dispatcher.Dispatch<MouseMovedEvent>([&](const MouseMovedEvent&e) {
-        if (ctrlPressed) {
+    dispatcher.Dispatch<MouseMovedEvent>([&](const MouseMovedEvent& e)
+    {
+        if (ctrlPressed)
+        {
             glm::vec2 mousePos(e.GetX(), e.GetY());
             glm::vec2 delta = mousePos - lastMousePos;
             lastMousePos = mousePos;
 
-            azimuth += delta.x * m_Sensitivity; // 允许方位角自由旋转
-            elevation -= delta.y * m_Sensitivity; // 控制仰角在一定范围内
-
-            // 限制仰角以防翻转，但不限制方位角
+            azimuth += delta.x * m_Sensitivity; 
+            elevation -= delta.y * m_Sensitivity; 
+            
             elevation = glm::clamp(elevation, -89.0f, 89.0f);
         }
         return false;
     });
 }
 
-void BlinnPhongLayer::OnUpdate(const Timestep ts) {
+void BlinnPhongLayer::OnUpdate(const Timestep ts)
+{
     m_OrbitCamera.OnUpdate(ts);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -139,21 +152,25 @@ void BlinnPhongLayer::OnUpdate(const Timestep ts) {
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
-void BlinnPhongLayer::OnImGuiRender() {
+void BlinnPhongLayer::OnImGuiRender()
+{
     ImGui::Begin("Properties");
 
-    if (ImGui::CollapsingHeader("Light Properties")) {
+    if (ImGui::CollapsingHeader("Light Properties"))
+    {
         ImGui::DragFloat("X Position", &m_Light.m_Position.x, 0.1f, -100.0f, 100.0f, "X: %.1f");
         ImGui::DragFloat("Y Position", &m_Light.m_Position.y, 0.1f, -100.0f, 100.0f, "Y: %.1f");
         ImGui::DragFloat("Z Position", &m_Light.m_Position.z, 0.1f, -100.0f, 100.0f, "Z: %.1f");
         ImGui::SliderFloat("Radius", &radius, 0.0f, 100.0f, "Radius = %.2f");
     }
 
-    if (ImGui::CollapsingHeader("Material Properties")) {
-        ImGui::ColorEdit3("Material Color", glm::value_ptr(m_Material.m_Color)); // 假设 m_Material 是您的材质实例
+    if (ImGui::CollapsingHeader("Material Properties"))
+    {
+        ImGui::ColorEdit3("Material Color", glm::value_ptr(m_Material.m_Color)); 
     }
 
-    if (ImGui::CollapsingHeader("Control Settings")) {
+    if (ImGui::CollapsingHeader("Control Settings"))
+    {
         ImGui::SliderFloat("Sensitivity", &m_Sensitivity, 0.01f, 1.0f, "Sensitivity = %.3f");
     }
 

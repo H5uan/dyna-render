@@ -22,6 +22,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(assimp CONFIG REQUIRED)
+find_package(Stb REQUIRED)
 
 file(GLOB_RECURSE GL_CORE_SOURCE "${PROJECT_SOURCE_DIR}/GL-Core/*.cpp")
 file(GLOB_RECURSE GL_CORE_HEADER "${PROJECT_SOURCE_DIR}/GL-Core/*.h")
@@ -34,9 +35,10 @@ target_link_libraries(GL-CORE
         spdlog::spdlog
         assimp::assimp
 )
+target_include_directories(GL-CORE PUBLIC ${Stb_INCLUDE_DIR})
 target_include_directories(GL-CORE PUBLIC ${PROJECT_SOURCE_DIR}/GL-Core/src)
 
-add_subdirectory(HW3)
+add_subdirectory(HW4)
 
 
 

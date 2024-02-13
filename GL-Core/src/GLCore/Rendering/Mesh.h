@@ -20,10 +20,12 @@ struct Vertex {
     glm::vec3 Normal;
     // texCoords
     glm::vec2 TexCoords;
-    // tangent
-    glm::vec3 Tangent;
-    // bitangent
-    glm::vec3 Bitangent;
+};
+
+struct Texture {
+    unsigned int id;
+    string type;
+    string path;
 };
 
 
@@ -31,12 +33,13 @@ class Mesh {
 public:
     vector<Vertex> m_Vertives;
     vector<unsigned int> m_Indices;
+    vector<Texture> m_Textures;
     glm::vec3 m_Center;
     unsigned int VAO;
 
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, glm::vec3 center);
+    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, glm::vec3 center);
 
-    void Draw(Shader&shader, bool point = false);
+    void Draw(Shader&shader, bool point = false) const;
 
 private:
     unsigned int VBO, EBO;

@@ -127,6 +127,9 @@ void TextureLayer::OnUpdate(const Timestep ts) {
     m_BlinnPhongShader->SetVec3("light.ambient", m_Light.m_Ambient);
     m_BlinnPhongShader->SetVec3("light.diffuse", m_Light.m_Diffuse);
     m_BlinnPhongShader->SetVec3("light.specular", m_Light.m_Specular);
+    m_BlinnPhongShader->SetFloat("light.constant", m_Light.m_Constant);
+    m_BlinnPhongShader->SetFloat("light.linear", m_Light.m_Linear);
+    m_BlinnPhongShader->SetFloat("light.quadratic", m_Light.m_Quadratic);
     m_BlinnPhongShader->SetVec3("viewPos", m_OrbitCamera.GetPosition());
     m_BlinnPhongShader->SetMat4("u_Model", model);
     m_BlinnPhongShader->SetMat4("u_ViewProjection", m_OrbitCamera.GetViewProjection());
@@ -141,6 +144,8 @@ void TextureLayer::OnUpdate(const Timestep ts) {
     m_lightCubeShader->SetVec3("light.ambient", m_Light.m_Ambient);
     m_lightCubeShader->SetVec3("light.diffuse", m_Light.m_Diffuse);
     m_lightCubeShader->SetVec3("light.specular", m_Light.m_Specular);
+
+
     glBindVertexArray(lightCubeVAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 }
@@ -157,8 +162,16 @@ void TextureLayer::OnImGuiRender() {
         ImGui::ColorEdit3("Diffuse Color", glm::value_ptr(m_Light.m_Diffuse));
         ImGui::ColorEdit3("Specular Color", glm::value_ptr(m_Light.m_Specular));
 
+        ImGui::SliderFloat("Constant Attenuation", &m_Light.m_Constant, 0.0f, 1.0f, "Constant = %.3f");
+        ImGui::SliderFloat("Linear Attenuation", &m_Light.m_Linear, 0.0f, 0.2f, "Linear = %.3f");
+        ImGui::SliderFloat("Quadratic Attenuation", &m_Light.m_Quadratic, 0.0f, 0.01f, "Quadratic = %.3f");
+
         ImGui::SliderFloat("Radius", &radius, 0.0f, 100.0f, "Radius = %.2f");
         ImGui::SliderFloat("Sensitivity", &m_Sensitivity, 0.01f, 1.0f, "Sensitivity = %.3f");
+    }
+
+    if (ImGui::CollapsingHeader("Material Control Properties")) {
+        ImGui::SliderFloat("Shininess", &m_Material.m_Shininess, 0.1f, 128.0f, "Shininess = %.3f");
     }
 
     if (ImGui::CollapsingHeader("Camera & Rendering Settings")) {

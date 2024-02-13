@@ -13,8 +13,8 @@ struct Light {
     glm::vec3 m_Position = {10.f, 10.f, 10.f};
 
     float m_Constant = 1.f;
-    float m_Linear = 0.09f;
-    float m_Quadratic = 0.032f;
+    float m_Linear = 0.f;
+    float m_Quadratic = 0.f;
 
     glm::vec3 m_Ambient = {0.05f, 0.05f, 0.05f};
     glm::vec3 m_Diffuse = {0.8f, 0.8f, 0.8f};

@@ -88,9 +88,9 @@ void FrameBufferLayer::OnAttach()
     glTextureParameteri(renderTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTextureParameteri(renderTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     int mipLevels = 1 + floor(log2(max(1280, 720)));
-    glTextureStorage2D(renderTexture, mipLevels, GL_RGBA8, 1280, 720);
+    glTextureStorage2D(renderTexture, 3, GL_RGBA8, 1280, 720);
     glGenerateTextureMipmap(renderTexture);
-    
+
     GLfloat maxAnisotropy;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAnisotropy);
     glTextureParameterf(renderTexture, GL_TEXTURE_MAX_ANISOTROPY, maxAnisotropy);
@@ -113,6 +113,7 @@ void FrameBufferLayer::OnDetach()
     delete m_Model;
     delete m_BlinnPhongShader;
     delete m_lightCubeShader;
+    delete m_PlaneShader;
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

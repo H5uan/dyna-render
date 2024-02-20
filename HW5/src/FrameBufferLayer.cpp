@@ -28,18 +28,18 @@ void FrameBufferLayer::OnAttach() {
 
 
     m_BlinnPhongShader = new Shader(
-        "../../../HW5/assets/shaders/Blinn-Phong.vert.glsl",
-        "../../../HW5/assets/shaders/Blinn-Phong.frag.glsl"
+        "../../HW5/assets/shaders/Blinn-Phong.vert.glsl",
+        "../../HW5/assets/shaders/Blinn-Phong.frag.glsl"
     );
 
     m_lightCubeShader = new Shader(
-        "../../../HW5/assets/shaders/LightCube.vert.glsl",
-        "../../../HW5/assets/shaders/LightCube.frag.glsl"
+        "../../HW5/assets/shaders/LightCube.vert.glsl",
+        "../../HW5/assets/shaders/LightCube.frag.glsl"
     );
 
     m_PlaneShader = new Shader(
-        "../../../HW5/assets/shaders/Plane.vert.glsl",
-        "../../../HW5/assets/shaders/Plane.frag.glsl"
+        "../../HW5/assets/shaders/Plane.vert.glsl",
+        "../../HW5/assets/shaders/Plane.frag.glsl"
     );
 
     m_Model = new Model(m_ObjFilePath);

@@ -14,10 +14,12 @@ using namespace GLCore::Utils;
 FrameBufferLayer::FrameBufferLayer(std::string obj_file_path): m_ObjFilePath(std::move(obj_file_path)),
                                                                m_SceneOrbitCamera(45.0f, 16.0f / 9.0f, 1.0f, 1000.0f),
                                                                m_SubSceneOrbitCamera(
-                                                                   45.0f, 16.0f / 9.0f, 1.0f, 1000.0f) {
+                                                                   45.0f, 16.0f / 9.0f, 1.0f, 1000.0f)
+{
 }
 
-void FrameBufferLayer::OnAttach() {
+void FrameBufferLayer::OnAttach()
+{
     EnableGLDebugging();
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -85,7 +87,10 @@ void FrameBufferLayer::OnAttach() {
     glTextureParameteri(renderTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTextureParameteri(renderTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTextureParameteri(renderTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTextureStorage2D(renderTexture, 1,GL_RGBA8, 1280, 720);
+    int mipLevels = 1 + floor(log2(max(1280, 720)));
+    glTextureStorage2D(renderTexture, mipLevels, GL_RGBA8, 1280, 720);
+    glGenerateTextureMipmap(renderTexture);
+    
     GLfloat maxAnisotropy;
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAnisotropy);
     glTextureParameterf(renderTexture, GL_TEXTURE_MAX_ANISOTROPY, maxAnisotropy);
@@ -97,12 +102,14 @@ void FrameBufferLayer::OnAttach() {
     glNamedRenderbufferStorage(depthRBO, GL_DEPTH_COMPONENT24, 1280, 720);
     glNamedFramebufferRenderbuffer(FBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
 
-    if (glCheckNamedFramebufferStatus(FBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    if (glCheckNamedFramebufferStatus(FBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
         LOG_ERROR("Framebuffer is not complete!\n");
     }
 }
 
-void FrameBufferLayer::OnDetach() {
+void FrameBufferLayer::OnDetach()
+{
     delete m_Model;
     delete m_BlinnPhongShader;
     delete m_lightCubeShader;
@@ -111,58 +118,69 @@ void FrameBufferLayer::OnDetach() {
     glBindVertexArray(0);
 }
 
-void FrameBufferLayer::OnEvent(Event&event) {
+void FrameBufferLayer::OnEvent(Event& event)
+{
     EventDispatcher dispatcher(event);
 
-    dispatcher.Dispatch<KeyPressedEvent>([&](const KeyPressedEvent&e) {
-        switch (e.GetKeyCode()) {
-            case static_cast<int>(KeyCode::LeftAlt):
-            case static_cast<int>(KeyCode::RightAlt):
-                altPressed = true;
-                break;
-            case static_cast<int>(KeyCode::F6):
-                m_BlinnPhongShader->Reload();
-                break;
-            case static_cast<int>(KeyCode::LeftControl):
-            case static_cast<int>(KeyCode::RightControl):
-                ctrlPressed = true;
-                break;
+    dispatcher.Dispatch<KeyPressedEvent>([&](const KeyPressedEvent& e)
+    {
+        switch (e.GetKeyCode())
+        {
+        case static_cast<int>(KeyCode::LeftAlt):
+        case static_cast<int>(KeyCode::RightAlt):
+            altPressed = true;
+            break;
+        case static_cast<int>(KeyCode::F6):
+            m_BlinnPhongShader->Reload();
+            break;
+        case static_cast<int>(KeyCode::LeftControl):
+        case static_cast<int>(KeyCode::RightControl):
+            ctrlPressed = true;
+            break;
         }
         return false;
     });
 
-    dispatcher.Dispatch<KeyReleasedEvent>([&](const KeyReleasedEvent&e) {
-        switch (e.GetKeyCode()) {
-            case static_cast<int>(KeyCode::LeftAlt):
-            case static_cast<int>(KeyCode::RightAlt):
-                altPressed = false;
-                break;
-            case static_cast<int>(KeyCode::LeftControl):
-            case static_cast<int>(KeyCode::RightControl):
-                ctrlPressed = false;
-                break;
+    dispatcher.Dispatch<KeyReleasedEvent>([&](const KeyReleasedEvent& e)
+    {
+        switch (e.GetKeyCode())
+        {
+        case static_cast<int>(KeyCode::LeftAlt):
+        case static_cast<int>(KeyCode::RightAlt):
+            altPressed = false;
+            break;
+        case static_cast<int>(KeyCode::LeftControl):
+        case static_cast<int>(KeyCode::RightControl):
+            ctrlPressed = false;
+            break;
         }
         return false;
     });
 
-    if (!altPressed) {
+    if (!altPressed)
+    {
         m_SceneOrbitCamera.OnEvent(event);
     }
 
-    if (altPressed) {
+    if (altPressed)
+    {
         m_SubSceneOrbitCamera.OnEvent(event);
     }
 
-    dispatcher.Dispatch<MouseButtonPressedEvent>([&](const MouseButtonPressedEvent&e) {
-        if (ctrlPressed && e.GetMouseButton() == static_cast<int>(MouseButton::Left)) {
+    dispatcher.Dispatch<MouseButtonPressedEvent>([&](const MouseButtonPressedEvent& e)
+    {
+        if (ctrlPressed && e.GetMouseButton() == static_cast<int>(MouseButton::Left))
+        {
             auto [x, y] = Input::GetMousePosition();
             lastMousePos = glm::vec2(x, y);
         }
         return false;
     });
 
-    dispatcher.Dispatch<MouseMovedEvent>([&](const MouseMovedEvent&e) {
-        if (ctrlPressed) {
+    dispatcher.Dispatch<MouseMovedEvent>([&](const MouseMovedEvent& e)
+    {
+        if (ctrlPressed)
+        {
             glm::vec2 mousePos(e.GetX(), e.GetY());
             glm::vec2 delta = mousePos - lastMousePos;
             lastMousePos = mousePos;
@@ -170,13 +188,13 @@ void FrameBufferLayer::OnEvent(Event&event) {
             azimuth += delta.x * m_Sensitivity;
             elevation -= delta.y * m_Sensitivity;
             elevation = glm::clamp(elevation, -89.0f, 89.0f);
-
         }
         return false;
     });
 }
 
-void FrameBufferLayer::OnUpdate(const Timestep ts) {
+void FrameBufferLayer::OnUpdate(const Timestep ts)
+{
     m_SceneOrbitCamera.OnUpdate(ts);
     m_SubSceneOrbitCamera.OnUpdate(ts);
 
@@ -237,10 +255,12 @@ void FrameBufferLayer::OnUpdate(const Timestep ts) {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-void FrameBufferLayer::OnImGuiRender() {
+void FrameBufferLayer::OnImGuiRender()
+{
     ImGui::Begin("Properties");
 
-    if (ImGui::CollapsingHeader("Light Control Properties")) {
+    if (ImGui::CollapsingHeader("Light Control Properties"))
+    {
         ImGui::DragFloat("X Position", &m_Light.m_Position.x, 0.1f, -100.0f, 100.0f, "X: %.1f");
         ImGui::DragFloat("Y Position", &m_Light.m_Position.y, 0.1f, -100.0f, 100.0f, "Y: %.1f");
         ImGui::DragFloat("Z Position", &m_Light.m_Position.z, 0.1f, -100.0f, 100.0f, "Z: %.1f");
@@ -257,12 +277,15 @@ void FrameBufferLayer::OnImGuiRender() {
         ImGui::SliderFloat("Sensitivity", &m_Sensitivity, 0.01f, 1.0f, "Sensitivity = %.3f");
     }
 
-    if (ImGui::CollapsingHeader("Material Control Properties")) {
+    if (ImGui::CollapsingHeader("Material Control Properties"))
+    {
         ImGui::SliderFloat("Shininess", &m_Material.m_Shininess, 0.1f, 128.0f, "Shininess = %.3f");
     }
 
-    if (ImGui::CollapsingHeader("Camera & Rendering Settings")) {
-        if (ImGui::Button("Reload Shader")) {
+    if (ImGui::CollapsingHeader("Camera & Rendering Settings"))
+    {
+        if (ImGui::Button("Reload Shader"))
+        {
             m_BlinnPhongShader->Reload();
         }
     }

@@ -1,5 +1,7 @@
 #include "Shader.h"
 
+#include "Shader.h"
+
 Shader::Shader(const char* vertexPath, const char* fragmentPath) : m_VertexPath(vertexPath),
                                                                    m_FragmentPath(fragmentPath) {
     Reload();

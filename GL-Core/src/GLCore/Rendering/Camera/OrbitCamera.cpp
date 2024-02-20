@@ -60,19 +60,22 @@ namespace GLCore::Core::Camera {
         glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
         m_InitialMousePosition = mouse;
 
-        if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Middle))) {
-            //LOG_INFO("Mouse Button Pressed: Middle");
-            MousePan(delta);
+        bool isAltPressed = Input::IsKeyPressed(static_cast<int>(KeyCode::LeftAlt)) || Input::IsKeyPressed(
+                                static_cast<int>(KeyCode::RightAlt));
+        if (!isAltPressed) {
+            if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Middle))) {
+                //LOG_INFO("Mouse Button Pressed: Middle");
+                MousePan(delta);
+            }
+            else if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Left))) {
+                //LOG_INFO("Mouse Button Pressed: Left");
+                MouseRotate(delta);
+            }
+            else if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Right))) {
+                //LOG_INFO("Mouse Button Pressed: Right");
+                MouseZoom(delta.y);
+            }
         }
-        else if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Left))) {
-            //LOG_INFO("Mouse Button Pressed: Left");
-            MouseRotate(delta);
-        }
-        else if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Right))) {
-            //LOG_INFO("Mouse Button Pressed: Right");
-            MouseZoom(delta.y);
-        }
-
         UpdateView();
     }
 
@@ -126,5 +129,32 @@ namespace GLCore::Core::Camera {
 
     glm::quat OrbitCamera::GetOrientation() const {
         return {glm::vec3(-m_Pitch, -m_Yaw, 0.0f)};
+    }
+
+
+    void SubOrbitCamera::OnUpdate(Timestep ts) {
+        const glm::vec2&mouse{Input::GetMouseX(), Input::GetMouseY()};
+        glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
+        m_InitialMousePosition = mouse;
+
+        bool isAltPressed = Input::IsKeyPressed(static_cast<int>(KeyCode::LeftAlt)) || Input::IsKeyPressed(
+                                static_cast<int>(KeyCode::RightAlt));
+
+        if (isAltPressed) {
+            if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Middle))) {
+                //LOG_INFO("Mouse Button Pressed: Middle + Alt");
+                MousePan(delta);
+            }
+            if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Left))) {
+                //LOG_INFO("Mouse Button Pressed: Left + Alt");
+                MouseRotate(delta);
+            }
+            if (Input::IsMouseButtonPressed(static_cast<int>(MouseButton::Right))) {
+                //LOG_INFO("Mouse Button Pressed: Right + Alt");
+                MouseZoom(delta.y);
+            }
+        }
+
+        UpdateView();
     }
 }

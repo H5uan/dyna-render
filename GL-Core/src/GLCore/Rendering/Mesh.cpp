@@ -30,9 +30,8 @@ void Mesh::Draw(Shader&shader, const bool point) const {
             number = std::to_string(normalNr++);
         else if (name == "texture_height")
             number = std::to_string(heightNr++);
-
+        glBindTextureUnit(i, m_Textures[i].id);
         glUniform1i(glGetUniformLocation(shader.m_ID, (name + number).c_str()), i);
-        glBindTexture(GL_TEXTURE_2D, m_Textures[i].id);
     }
 
     glBindVertexArray(VAO);
@@ -42,33 +41,33 @@ void Mesh::Draw(Shader&shader, const bool point) const {
 }
 
 void Mesh::SetupMesh() {
-    // create buffers/arrays
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    glCreateVertexArrays(1, &VAO);
 
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glCreateBuffers(1, &VBO);
+    glNamedBufferData(VBO, m_Vertives.size() * sizeof(Vertex), &m_Vertives[0], GL_STATIC_DRAW);
 
-    glBufferData(GL_ARRAY_BUFFER, m_Vertives.size() * sizeof(Vertex), &m_Vertives[0], GL_STATIC_DRAW);
+    glCreateBuffers(1, &EBO);
+    glNamedBufferData(EBO, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), &m_Indices[0], GL_STATIC_DRAW);
+    // link vbo
+    glVertexArrayElementBuffer(VAO, EBO);
 
-    // vertex attribute pointers
-    // vertex Positions
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), static_cast<void *>(nullptr));
-    // vertex normals
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, Normal)));
-    // vertex texture coords
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, TexCoords)));
-    // vertex tangent
-    //glEnableVertexAttribArray(3);
-    //glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, Tangent)));
-    // vertex bitangent
-    //glEnableVertexAttribArray(4);
-    //glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void *>(offsetof(Vertex, Bitangent)));
+    // vertex attrib pointer
+    // position
+    glEnableVertexArrayAttrib(VAO, 0);
+    glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, Position));
+    glVertexArrayAttribBinding(VAO, 0, 0);
+
+    // normal
+    glEnableVertexArrayAttrib(VAO, 1);
+    glVertexArrayAttribFormat(VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, Normal));
+    glVertexArrayAttribBinding(VAO, 1, 0);
+
+    // texcoords
+    glEnableVertexArrayAttrib(VAO, 2);
+    glVertexArrayAttribFormat(VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, TexCoords));
+    glVertexArrayAttribBinding(VAO, 2, 0);
+
+    // binding vbo
+    glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(Vertex));
 }

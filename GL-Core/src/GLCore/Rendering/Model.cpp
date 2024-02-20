@@ -51,27 +51,35 @@ unsigned int TextureFromFile(const char* path, const string&directory, bool gamm
     filename = directory + '/' + filename;
 
     unsigned int textureID;
-    glGenTextures(1, &textureID);
+    glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
 
     int width, height, nrComponents;
     unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data) {
         GLenum format;
-        if (nrComponents == 1)
+        GLenum internalFormat;
+        if (nrComponents == 1) {
             format = GL_RED;
-        else if (nrComponents == 3)
+            internalFormat = GL_R8; // Specify exact internal format
+        }
+        else if (nrComponents == 3) {
             format = GL_RGB;
-        else if (nrComponents == 4)
+            internalFormat = gamma ? GL_SRGB8 : GL_RGB8; // Choose sRGB format if gamma correction is needed
+        }
+        else if (nrComponents == 4) {
             format = GL_RGBA;
+            internalFormat = gamma ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+            // Choose sRGB format with alpha if gamma correction is needed
+        }
 
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glTextureStorage2D(textureID, 1, internalFormat, width, height);
+        glTextureSubImage2D(textureID, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, data);
+        glGenerateTextureMipmap(textureID);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         stbi_image_free(data);
     }

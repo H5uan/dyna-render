@@ -10,20 +10,20 @@
 
 
 namespace GLCore::Core::Camera {
-    class OrbitCamera final : public Camera {
+    class OrbitCamera : public Camera {
     public:
         OrbitCamera() = default;
 
         OrbitCamera(float fov, float aspectRatio, float nearClip, float farClip);
 
-        void OnUpdate(Timestep ts);
+        virtual void OnUpdate(Timestep ts);
 
         void OnEvent(Event&e);
 
-        float GetDistance() const { return m_Distance; }
+        [[nodiscard]] float GetDistance() const { return m_Distance; }
         void SetDistance(const float distance) { m_Distance = distance; }
 
-        inline void SetViewportSize(const float width, const float height) {
+        void SetViewportSize(const float width, const float height) {
             m_ViewportWidth = width;
             m_ViewportHeight = height;
             UpdateProjection();
@@ -45,7 +45,7 @@ namespace GLCore::Core::Camera {
         [[nodiscard]] float GetPitch() const { return m_Pitch; }
         [[nodiscard]] float GetYaw() const { return m_Yaw; }
 
-    private:
+    protected:
         void UpdateProjection();
 
         void UpdateView();
@@ -66,7 +66,7 @@ namespace GLCore::Core::Camera {
 
         [[nodiscard]] float ZoomSpeed() const;
 
-    private:
+    protected:
         float m_FOV = 45.0f, m_AspectRatio = 1.778f, m_NearClip = 0.1f, m_FarClip = 1000.0f;
 
         glm::mat4 m_ViewMatrix;
@@ -79,5 +79,12 @@ namespace GLCore::Core::Camera {
         float m_Pitch = 0.0f, m_Yaw = 0.0f;
 
         float m_ViewportWidth = 1280, m_ViewportHeight = 720;
+    };
+
+    class SubOrbitCamera : public OrbitCamera {
+    public:
+        using OrbitCamera::OrbitCamera;
+
+        void OnUpdate(Timestep ts) override;
     };
 }

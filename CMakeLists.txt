@@ -38,7 +38,7 @@ target_link_libraries(GL-CORE
 target_include_directories(GL-CORE PUBLIC ${Stb_INCLUDE_DIR})
 target_include_directories(GL-CORE PUBLIC ${PROJECT_SOURCE_DIR}/GL-Core/src)
 
-add_subdirectory(HW4)
+add_subdirectory(HW5)
 
 
 

@@ -10,7 +10,7 @@
 #include <assimp/postprocess.h>
 
 #include "mesh.h"
-#include "shader.h"
+#include "NewShader.h"
 
 #include <string>
 

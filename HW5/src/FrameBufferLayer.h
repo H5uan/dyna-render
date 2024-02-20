@@ -4,7 +4,7 @@
 #include <GLCoreUtils.h>
 
 #include "GLCore/Rendering/Model.h"
-#include "GLCore/Rendering/shader.h"
+#include "GLCore/Rendering/NewShader.h"
 #include "GLCore/Rendering/Camera/OrbitCamera.h"
 #include "GLCore/Rendering/Camera/OrthographicCamera.h"
 #include "GLCore/Rendering/Camera/OrthographicCameraController.h"
@@ -28,11 +28,11 @@ struct Material {
     float m_Shininess = 32.f;
 };
 
-class TextureLayer final : public GLCore::Layer {
+class FrameBufferLayer final : public GLCore::Layer {
 public:
-    TextureLayer();
+    FrameBufferLayer();
 
-    explicit TextureLayer(std::string obj_file_path);
+    explicit FrameBufferLayer(std::string obj_file_path);
 
     void OnAttach() override;
 
@@ -49,40 +49,60 @@ private:
 
     Shader* m_BlinnPhongShader;
     Shader* m_lightCubeShader;
+    Shader* m_PlaneShader;
     Model* m_Model;
 
-    static constexpr float vertices[] = {
+    static constexpr float s_CubeVertices[] = {
         -0.5f, -0.5f, -0.5f,
         0.5f, -0.5f, -0.5f,
-        -0.5f, 0.5f, -0.5f,
         0.5f, 0.5f, -0.5f,
+        -0.5f, 0.5f, -0.5f,
         -0.5f, -0.5f, 0.5f,
         0.5f, -0.5f, 0.5f,
-        -0.5f, 0.5f, 0.5f,
         0.5f, 0.5f, 0.5f,
+        -0.5f, 0.5f, 0.5f
     };
 
-    static constexpr unsigned int indices[] = {
+    static constexpr unsigned int s_CubeIndices[] = {
         0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4,
+        4, 7, 3, 3, 0, 4,
         1, 5, 6, 6, 2, 1,
-        7, 6, 5, 5, 4, 7,
-        4, 0, 3, 3, 7, 4,
-        4, 5, 1, 1, 0, 4,
+        4, 0, 1, 1, 5, 4,
         3, 2, 6, 6, 7, 3
     };
 
-    GLuint VBO, lightCubeVAO, lightCubeEBO;
+    static constexpr float s_PlaneVertices[] = {
+        0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f
+    };
+
+    static constexpr unsigned int s_PlaneIndices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    GLuint lightCubeVBO, lightCubeVAO, lightCubeEBO;
+
+    GLuint planeVBO, planeVAO, planeEBO, FBO;
+
+    GLuint renderTexture;
+
+    GLuint depthRBO;
 
     Light m_Light;
     Material m_Material;
 
-    GLCore::Core::Camera::OrbitCamera m_OrbitCamera;
-    GLCore::Core::Camera::OrthographicCameraController m_OrthographicCamera;
+    GLCore::Core::Camera::OrbitCamera m_SceneOrbitCamera;
+    GLCore::Core::Camera::SubOrbitCamera m_SubSceneOrbitCamera;
 
     float azimuth = 0.0f;
     float elevation = 0.0f;
-    float radius = 30.0f;
+    float radius = 20.0f;
     bool ctrlPressed = false;
+    bool altPressed = false;
     glm::vec2 lastMousePos;
     float m_Sensitivity = 0.1f;
     bool m_Blinn = true;

@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include <GLCore/Core/Log.h>
+#include <shaderc/shaderc.hpp>
 
 #include <string>
 #include <fstream>

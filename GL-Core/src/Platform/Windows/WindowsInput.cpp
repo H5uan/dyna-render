@@ -19,6 +19,13 @@ namespace GLCore {
         return state == GLFW_PRESS;
     }
 
+    bool WindowsInput::IsMouseButtonReleasedImpl(int button) {
+        const auto window = static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow());
+        const int state = glfwGetMouseButton(window, button);
+        return state == GLFW_RELEASE;
+    }
+
+
     std::pair<float, float> WindowsInput::GetMousePositionImpl() {
         const auto window = static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow());
         double xpos, ypos;

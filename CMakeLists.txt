@@ -34,15 +34,11 @@ find_package(imgui CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(assimp CONFIG REQUIRED)
 find_package(Stb REQUIRED)
-find_package(shader-slang CONFIG REQUIRED)
-message(STATUS "shader-slang libraries: ${shader-slang_LIBRARIES}")
-message(STATUS "shader-slang library directory: ${shader-slang_LIBRARY_DIRS}")
-message(STATUS "shader-slang include directory: ${shader-slang_INCLUDE_DIRS}")
-
-
 
 file(GLOB_RECURSE GL_CORE_SOURCE "${PROJECT_SOURCE_DIR}/GL-Core/*.cpp")
 file(GLOB_RECURSE GL_CORE_HEADER "${PROJECT_SOURCE_DIR}/GL-Core/*.h")
+
+add_subdirectory(extern/shader-slang)
 
 add_library(GL-CORE STATIC ${GL_CORE_SOURCE} ${GL_CORE_HEADER})
 target_link_libraries(GL-CORE
@@ -51,6 +47,7 @@ target_link_libraries(GL-CORE
         imgui::imgui
         spdlog::spdlog
         assimp::assimp
+        Slang::Slang
 )
 target_include_directories(GL-CORE PUBLIC ${Stb_INCLUDE_DIR})
 target_include_directories(GL-CORE PUBLIC ${PROJECT_SOURCE_DIR}/GL-Core/src)

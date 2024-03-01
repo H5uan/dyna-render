@@ -1,12 +1,10 @@
 #pragma once
 #include <cstdint>
+#include <filesystem>
 #include <string>
+#include <vector>
 
 #include "GLCore/Core/Base.h"
-
-namespace std::filesystem {
-    class path;
-}
 
 class Texture {
 public:
@@ -21,7 +19,7 @@ public:
     virtual void SetData(void* data, uint32_t size) {
     };
 
-    virtual void Bind(uint32_t slot = 0) const = 0;
+    virtual void Bind(uint32_t slot) const = 0;
 
     virtual void UnBind() const = 0;
 
@@ -39,3 +37,29 @@ public:
     static Ref<Texture2D> Create(const std::string&path);
 };
 
+
+enum class FaceTarget : uint32_t {
+    Right = 0,
+    Left = 1,
+    Top = 2,
+    Bottom = 3,
+    Front = 4,
+    Back = 5,
+};
+
+class CubeMapTexture : public Texture {
+public:
+    virtual void SetFace(FaceTarget faceIndex, const std::string&path) = 0;
+
+    virtual void GenerateMipmap() = 0;
+
+    static Ref<CubeMapTexture> Create(std::vector<std::string>&paths);
+
+    static Ref<CubeMapTexture> Create();
+
+    static Ref<CubeMapTexture> Create(uint32_t width, uint32_t height);
+
+    virtual void Generate() = 0;
+
+    [[nodiscard]] virtual std::vector<std::string> GetPaths() = 0;
+};

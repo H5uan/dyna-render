@@ -12,7 +12,7 @@ public:
 
     OpenGLTexture2D(const std::filesystem::path&path);
 
-    ~OpenGLTexture2D() override;
+    virtual ~OpenGLTexture2D();
 
     uint32_t GetWidth() const override { return mWidth; };
     uint32_t GetHeight() const override { return mHeight; };
@@ -36,4 +36,46 @@ private:
     uint32_t mWidth, mHeight;
     uint32_t mRendererID;
     GLenum mInternalFormat, mDataFormat;
+};
+
+
+class OpenGLCubeMapTexture : public CubeMapTexture {
+public:
+    OpenGLCubeMapTexture();
+
+    OpenGLCubeMapTexture(uint32_t width, uint32_t height);
+
+    OpenGLCubeMapTexture(std::vector<std::string>&paths);
+
+    virtual ~OpenGLCubeMapTexture();
+
+    uint32_t GetWidth() const override { return mWidth; };
+    uint32_t GetHeight() const override { return mHeight; };
+    uint32_t GetRendererID() const override { return mRendererID; }
+
+    void SetFace(FaceTarget faceIndex, const std::string&path) override;
+
+    void GenerateMipmap() override;
+
+    void Bind(uint32_t slot = 0) const override;
+
+    void UnBind() const override;
+
+    [[nodiscard]] bool IsLoaded() const override { return m_IsLoaded; }
+
+
+    void Generate() override;
+
+    [[nodiscard]] std::vector<std::string> GetPaths() override { return mPaths; }
+
+    bool operator==(const Texture&other) const override {
+        return mRendererID == ((OpenGLCubeMapTexture &)other).mRendererID;
+    }
+
+private:
+    uint32_t mRendererID;
+    uint32_t mWidth, mHeight;
+    bool m_IsLoaded = false;
+
+    std::vector<std::string> mPaths;
 };

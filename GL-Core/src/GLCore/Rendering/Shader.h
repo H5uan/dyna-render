@@ -1,87 +1,91 @@
 #pragma once
 
-#include <glad/glad.h>
+#include <string>
+#include <unordered_map>
+#include <filesystem>
+
 #include <glm/glm.hpp>
 
-#include <GLCore/Core/Log.h>
-#include <shaderc/shaderc.hpp>
+#include "GLCore/Core/Base.h"
 
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
+enum class ShaderUniformType {
+    None = 0, Bool, Int, UInt, Float, Vec2, Vec3, Vec4, Mat3, Mat4
+};
+
+class ShaderUniform {
+public:
+    ShaderUniform() = default;
+
+    ShaderUniform(const std::string&name, ShaderUniformType type, uint32_t size, uint32_t offset);
+
+    const std::string& GetName() const { return mName; }
+    ShaderUniformType GetType() const { return mType; }
+    uint32_t GetSize() const { return mSize; }
+    uint32_t GetOffset() const { return mOffset; }
+
+    static const std::string& UniformTypeToString(ShaderUniformType type);
+
+private:
+    std::string mName;
+    ShaderUniformType mType = ShaderUniformType::None;
+    uint32_t mSize = 0;
+    uint32_t mOffset = 0;
+};
+
+struct ShaderUniformBuffer {
+    std::string Name;
+    uint32_t Index;
+    uint32_t BindingPoint;
+    uint32_t Size;
+    uint32_t RendererID;
+    std::vector<ShaderUniform> Uniforms;
+};
+
+struct ShaderBuffer {
+    std::string Name;
+    uint32_t Size = 0;
+    std::unordered_map<std::string, ShaderUniform> Uniforms;
+};
 
 class Shader {
 public:
-    unsigned int m_ID = -1;
-    std::string m_VertexPath;
-    std::string m_FragmentPath;
+    virtual ~Shader() = default;
 
-    Shader(const char* vertexPath, const char* fragmentPath);
+    virtual void Bind() const = 0;
 
-    void Reload();
+    virtual void Unbind() const = 0;
 
+    virtual void SetBool(const std::string&name, bool value) = 0;
 
-    void Use() const {
-        glUseProgram(m_ID);
-    }
+    virtual void SetInt(const std::string&name, int value) = 0;
 
+    virtual void SetIntArray(const std::string&name, int* values, uint32_t count) = 0;
 
-    void SetBool(const std::string&name, bool value) const {
-        glUniform1i(glGetUniformLocation(m_ID, name.c_str()), (int)value);
-    }
+    virtual void SetFloat(const std::string&name, float value) = 0;
 
+    virtual void SetFloat3(const std::string&name, const glm::vec3&value) = 0;
 
-    void SetInt(const std::string&name, int value) const {
-        glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value);
-    }
+    virtual void SetFloat4(const std::string&name, const glm::vec4&value) = 0;
 
-    void SetFloat(const std::string&name, float value) const {
-        glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
-    }
+    virtual void SetMat4(const std::string&name, const glm::mat4&value) = 0;
 
-    void SetVec2(const std::string&name, const glm::vec2&value) const {
-        glUniform2fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]);
-    }
+    virtual void SetUniform(const std::string&fullname, const glm::mat4&value) {
+    };
 
-    void SetVec2(const std::string&name, float x, float y) const {
-        glUniform2f(glGetUniformLocation(m_ID, name.c_str()), x, y);
-    }
+    [[nodiscard]] virtual const std::string& GetName() const = 0;
 
-    void SetVec3(const std::string&name, const glm::vec3&value) const {
-        glUniform3fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]);
-    }
+    /***
+    static Ref<Shader> Create(const std::filesystem::path&filepath);
 
-    void SetVec3(const std::string&name, float x, float y, float z) const {
-        glUniform3f(glGetUniformLocation(m_ID, name.c_str()), x, y, z);
-    }
+    static Ref<Shader> Create(const std::string&filepath);
 
-    void SetVec4(const std::string&name, const glm::vec4&value) const {
-        glUniform4fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]);
-    }
+    static Ref<Shader> Create(const std::string&name, const std::string&vertexSrc, const std::string&fragmentSrc);
+***/
 
-    void SetVec4(const std::string&name, float x, float y, float z, float w) const {
-        glUniform4f(glGetUniformLocation(m_ID, name.c_str()), x, y, z, w);
-    }
+    static Ref<Shader> CreateNative(const std::filesystem::path&filepath);
 
-    void SetMat2(const std::string&name, const glm::mat2&mat) const {
-        glUniformMatrix2fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
+    static Ref<Shader> CreateNative(const std::string&filepath);
 
-    void SetMat3(const std::string&name, const glm::mat3&mat) const {
-        glUniformMatrix3fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-
-    void SetMat4(const std::string&name, const glm::mat4&mat) const {
-        glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-
-private:
-    std::string ReadShaderCode(const char* shaderPath);
-
-    unsigned int CompileShader(GLenum type, const char* code);
-
-    unsigned int LinkProgram(unsigned int vertex, unsigned int fragment);
-
-    void CheckCompileErrors(GLuint shader, std::string type);
+    static Ref<Shader> CreateNative(const std::string&name, const std::string&vertexSrc,
+                                                const std::string&fragmentSrc);
 };

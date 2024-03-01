@@ -4,21 +4,20 @@
 
 class OpenGLVertexBuffer : public VertexBuffer {
 public:
-    OpenGLVertexBuffer() = default;
-
     OpenGLVertexBuffer(uint32_t size, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
 
-    OpenGLVertexBuffer(const std::vector<std::any>&vertices,
-                       VertexBufferUsage usage = VertexBufferUsage::Static);
+    OpenGLVertexBuffer(void* vertices, uint32_t size, VertexBufferUsage usage = VertexBufferUsage::Static);
 
-    ~OpenGLVertexBuffer() override;
+    virtual ~OpenGLVertexBuffer();
 
-    void UpdataData(const std::vector<std::any>&vertices) override;
+    virtual void Bind() const override;
 
-    [[nodiscard]] const BufferLayout& GetLayout() const override { return mLayout; }
-    void SetLayout(const BufferLayout&layout) override { mLayout = layout; }
+    virtual void Unbind() const override;
 
-    [[nodiscard]] uint32_t GetID() const override { return mRendererID; }
+    virtual void SetData(const void* data, uint32_t size) override;
+
+    virtual const BufferLayout& GetLayout() const override { return mLayout; }
+    virtual void SetLayout(const BufferLayout&layout) override { mLayout = layout; }
 
 private:
     uint32_t mRendererID;

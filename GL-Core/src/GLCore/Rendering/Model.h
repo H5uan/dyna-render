@@ -10,19 +10,19 @@
 #include <assimp/postprocess.h>
 
 #include "mesh.h"
-#include "NewShader.h"
-
 #include <string>
 
 #include <map>
 #include <vector>
+
+#include "Platform/OpenGL/NativeOpenGLShader.h"
 using namespace std;
 
 
 class Model {
 public:
-    vector<Texture> textures_loaded;
-    vector<Mesh> meshes;
+    vector<TextureInfo> textures_loaded;
+    vector<OldMesh> meshes;
     string directory;
     bool gammaCorrection = false;
 
@@ -32,7 +32,7 @@ public:
         LoadModel(path);
     }
 
-    void Draw(Shader&shader, const bool draw = false) const {
+    void Draw(NativeOpenGLShader&shader, const bool draw = false) const {
         for (auto&mesh: meshes)
             mesh.Draw(shader, draw);
     }
@@ -40,12 +40,12 @@ public:
 private:
     void LoadModel(string const&path);
 
-    vector<Texture> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
+    vector<TextureInfo> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 
 
     void ProcessNode(const aiNode* node, const aiScene* scene);
 
-    Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+    OldMesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
 };
 
 unsigned int TextureFromFile(const char* path, const string&directory, bool gamma = false);

@@ -1,21 +1,25 @@
 #pragma once
 
+#include <cstdint>
+
 #include "GLCore/Rendering/IndexBuffer.h"
+
 
 class OpenGLIndexBuffer : public IndexBuffer {
 public:
-    explicit OpenGLIndexBuffer(const std::vector<uint32_t>&indices);
+    OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
 
-    explicit OpenGLIndexBuffer(uint32_t count);
+    OpenGLIndexBuffer(uint32_t count);
 
-    ~OpenGLIndexBuffer() override;
+    virtual ~OpenGLIndexBuffer();
 
-    // update data in index buffer
-    void UpdateData(const std::vector<uint32_t>&indices) override;
+    virtual void Bind() const override;
 
-    [[nodiscard]] uint32_t GetCount() const override { return mCount; }
+    virtual void Unbind() const override;
 
-    [[nodiscard]] uint32_t GetID() const override { return mRendererID; }
+    virtual void SetData(const void* data, uint32_t count) override;
+
+    virtual uint32_t GetCount() const { return mCount; }
 
 private:
     uint32_t mRendererID;

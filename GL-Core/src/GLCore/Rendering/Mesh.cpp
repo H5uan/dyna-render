@@ -3,15 +3,15 @@
 #include <utility>
 
 
-Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures, const glm::vec3 center)
+OldMesh::OldMesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<TextureInfo> textures, const glm::vec3 center)
     : m_Vertives(std::move(vertices)),
       m_Indices(std::move(indices)),
       m_Textures(std::move(textures)),
       m_Center(center), VAO(0), VBO(0), EBO(0) {
-    SetupMesh();
+    SetupOldMesh();
 }
 
-void Mesh::Draw(Shader&shader, const bool point) const {
+void OldMesh::Draw(NativeOpenGLShader&shader, const bool point) const {
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
     unsigned int normalNr = 1;
@@ -31,7 +31,7 @@ void Mesh::Draw(Shader&shader, const bool point) const {
         else if (name == "texture_height")
             number = std::to_string(heightNr++);
         glBindTextureUnit(i, m_Textures[i].id);
-        glUniform1i(glGetUniformLocation(shader.m_ID, (name + number).c_str()), i);
+        glUniform1i(glGetUniformLocation(shader.mRendererID, (name + number).c_str()), i);
     }
 
     glBindVertexArray(VAO);
@@ -40,7 +40,7 @@ void Mesh::Draw(Shader&shader, const bool point) const {
     glActiveTexture(GL_TEXTURE0);
 }
 
-void Mesh::SetupMesh() {
+void OldMesh::SetupOldMesh() {
     glCreateVertexArrays(1, &VAO);
 
     glCreateBuffers(1, &VBO);

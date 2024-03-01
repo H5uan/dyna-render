@@ -1,53 +1,64 @@
 #pragma once
-#include <any>
-#include <cstdint>
-#include <utility>
 
-#include "GLCore.h"
+#include <string>
+#include <vector>
+
 #include "GLCore/Core/Base.h"
+#include "GLCore/Core/Core.h"
 
 enum class ShaderDataType {
     None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
 };
 
-struct ShaderDataTypeInfo {
-    uint32_t Size;
-    uint32_t ElementCount;
-};
+static uint32_t ShaderDataTypeSize(ShaderDataType type) {
+    switch (type) {
+        case ShaderDataType::Float: return 4;
+        case ShaderDataType::Float2: return 4 * 2;
+        case ShaderDataType::Float3: return 4 * 3;
+        case ShaderDataType::Float4: return 4 * 4;
+        case ShaderDataType::Mat3: return 4 * 3 * 3;
+        case ShaderDataType::Mat4: return 4 * 4 * 4;
+        case ShaderDataType::Int: return 4;
+        case ShaderDataType::Int2: return 4 * 2;
+        case ShaderDataType::Int3: return 4 * 3;
+        case ShaderDataType::Int4: return 4 * 4;
+        case ShaderDataType::Bool: return 1;
+    }
 
-static const std::unordered_map<ShaderDataType, ShaderDataTypeInfo> ShaderDataTypeMap = {
-    {ShaderDataType::Float, {4, 1}},
-    {ShaderDataType::Float2, {4 * 2, 2}},
-    {ShaderDataType::Float3, {4 * 3, 3}},
-    {ShaderDataType::Float4, {4 * 4, 4}},
-    {ShaderDataType::Mat3, {4 * 3 * 3, 3 * 3}},
-    {ShaderDataType::Mat4, {4 * 4 * 4, 4 * 4}},
-    {ShaderDataType::Int, {4, 1}},
-    {ShaderDataType::Int2, {4 * 2, 2}},
-    {ShaderDataType::Int3, {4 * 3, 3}},
-    {ShaderDataType::Int4, {4 * 4, 4}},
-    {ShaderDataType::Bool, {1, 1}}
-};
-
-static uint32_t ShaderDataTypeSize(const ShaderDataType type) {
-    return ShaderDataTypeMap.at(type).Size;
+    GLCORE_ASSERT(false, "Unknown ShaderDataType!");
+    return 0;
 }
 
 struct BufferElement {
-    std::string Name{};
-    ShaderDataType Type{};
-    uint32_t Size{};
-    uint32_t Offset{}; // distance bettwen different attrib
-    bool Normalized{};
+    std::string Name;
+    ShaderDataType Type;
+    uint32_t Size;
+    uint32_t Offset;
+    bool Normalized;
 
     BufferElement() = default;
 
-    BufferElement(const ShaderDataType type, std::string name, const bool normalized = false)
-        : Name(std::move(name)), Type(type), Size(ShaderDataTypeMap.at(type).Size), Offset(0), Normalized(normalized) {
+    BufferElement(ShaderDataType type, const std::string&name, bool normalized = false)
+        : Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized) {
     }
 
     [[nodiscard]] uint32_t GetComponentCount() const {
-        return ShaderDataTypeMap.at(Type).ElementCount;
+        switch (Type) {
+            case ShaderDataType::Float: return 1;
+            case ShaderDataType::Float2: return 2;
+            case ShaderDataType::Float3: return 3;
+            case ShaderDataType::Float4: return 4;
+            case ShaderDataType::Mat3: return 3 * 3;
+            case ShaderDataType::Mat4: return 4 * 4;
+            case ShaderDataType::Int: return 1;
+            case ShaderDataType::Int2: return 2;
+            case ShaderDataType::Int3: return 3;
+            case ShaderDataType::Int4: return 4;
+            case ShaderDataType::Bool: return 1;
+        }
+
+        GLCORE_ASSERT(false, "Unknown ShaderDataType!");
+        return 0;
     }
 };
 
@@ -60,13 +71,13 @@ public:
         CalculateOffsetsAndStride();
     }
 
-    [[nodiscard]] uint32_t GetStride() const { return mStride; }
-    [[nodiscard]] const std::vector<BufferElement>& GetElements() const { return mElements; }
+    [[nodiscard]] inline uint32_t GetStride() const { return mStride; }
+    [[nodiscard]] inline const std::vector<BufferElement>& GetElements() const { return mElements; }
 
     std::vector<BufferElement>::iterator begin() { return mElements.begin(); }
     std::vector<BufferElement>::iterator end() { return mElements.end(); }
-    [[nodiscard]] std::vector<BufferElement>::const_iterator begin() const { return mElements.begin(); }
-    [[nodiscard]] std::vector<BufferElement>::const_iterator end() const { return mElements.end(); }
+    std::vector<BufferElement>::const_iterator begin() const { return mElements.begin(); }
+    std::vector<BufferElement>::const_iterator end() const { return mElements.end(); }
 
 private:
     void CalculateOffsetsAndStride() {
@@ -79,8 +90,9 @@ private:
         }
     }
 
+private:
     std::vector<BufferElement> mElements;
-    uint32_t mStride = 0; // distance between the same vertices' attribs
+    uint32_t mStride = 0;
 };
 
 enum class VertexBufferUsage {
@@ -92,16 +104,18 @@ class VertexBuffer {
 public:
     virtual ~VertexBuffer() = default;
 
-    virtual void UpdataData(const std::vector<std::any>&data) = 0;
+    virtual void Bind() const = 0;
+
+    virtual void Unbind() const = 0;
+
+    virtual void SetData(const void* data, uint32_t size) = 0;
 
     [[nodiscard]] virtual const BufferLayout& GetLayout() const = 0;
 
     virtual void SetLayout(const BufferLayout&layout) = 0;
 
-    [[nodiscard]] virtual uint32_t GetID() const =0;
-
     static Ref<VertexBuffer> Create(uint32_t size, VertexBufferUsage usage = VertexBufferUsage::Dynamic);
 
-    static Ref<VertexBuffer> Create(const std::vector<std::any>&vertices,
+    static Ref<VertexBuffer> Create(void* vertices, uint32_t size,
                                     VertexBufferUsage usage = VertexBufferUsage::Static);
 };

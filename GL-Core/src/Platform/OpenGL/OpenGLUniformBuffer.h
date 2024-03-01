@@ -9,10 +9,10 @@ class OpenGLUniformBuffer : public UniformBuffer {
 public:
     OpenGLUniformBuffer(uint32_t size, uint32_t binding);
 
-    ~OpenGLUniformBuffer() override;
+    virtual ~OpenGLUniformBuffer();
 
-    void SetData(const std::vector<std::any>&uniform_data, uint32_t offset) override;
+    void SetData(const void* data, uint32_t size, uint32_t offset = 0) override;
 
 private:
-    uint32_t mRendererID = 0;
+    uint32_t m_RendererID = 0;
 };

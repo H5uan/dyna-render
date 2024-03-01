@@ -66,7 +66,6 @@ namespace GLCore {
             WindowResizeEvent event(width, height);
             data.event_callback(event);
             // Whenever the window size changes, the viewport is also updated
-            glViewport(0, 0, width, height);
         });
 
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {

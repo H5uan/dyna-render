@@ -36,12 +36,12 @@ void EditorLayer::OnAttach() {
 
 
     std::vector<std::string> paths{
-        "../../../Assets/Textures/Skybox/cubemap_posx.png",
-        "../../../Assets/Textures/Skybox/cubemap_negx.png",
-        "../../../Assets/Textures/Skybox/cubemap_posy.png",
-        "../../../Assets/Textures/Skybox/cubemap_negy.png",
-        "../../../Assets/Textures/Skybox/cubemap_posz.png",
-        "../../../Assets/Textures/Skybox/cubemap_negz.png",
+        "../../Assets/Textures/Skybox/cubemap_posx.png",
+        "../../Assets/Textures/Skybox/cubemap_negx.png",
+        "../../Assets/Textures/Skybox/cubemap_posy.png",
+        "../../Assets/Textures/Skybox/cubemap_negy.png",
+        "../../Assets/Textures/Skybox/cubemap_posz.png",
+        "../../Assets/Textures/Skybox/cubemap_negz.png",
     };
 
     glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_CubeMap);
@@ -75,9 +75,9 @@ void EditorLayer::OnAttach() {
     glTextureParameteri(m_CubeMap, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     m_Teapot = new Model(m_ObjFilePath);
-    m_Plane = new Model("../../../Assets/Models/plane.obj");
-    m_Cube = new Model("../../../Assets/Models/cube.obj");
-    m_Sphere = new Model("../../../Assets/Models/sphere.obj");
+    m_Plane = new Model("../../Assets/Models/plane.obj");
+    m_Cube = new Model("../../Assets/Models/cube.obj");
+    m_Sphere = new Model("../../Assets/Models/sphere.obj");
 }
 
 void EditorLayer::OnDetach() {

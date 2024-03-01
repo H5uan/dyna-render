@@ -51,16 +51,16 @@ private:
 
 
     Ref<NativeOpenGLShader> m_SkyboxShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/SkyBox.glsl");
+        "../../Shaders/SkyBox.glsl");
 
     Ref<NativeOpenGLShader> m_EnvironmentShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/IBL/environment-mapping.glsl");
+        "../../Shaders/IBL/environment-mapping.glsl");
 
     Ref<NativeOpenGLShader> m_PlaneShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/MirrorPlane.glsl");
+        "../../Shaders/MirrorPlane.glsl");
 
     Ref<NativeOpenGLShader> m_LightSphereShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/Light.glsl");
+        "../../Shaders/Light.glsl");
 
     GLuint m_CubeMap;
     Model *m_Cube, *m_Plane, *m_Teapot, *m_Sphere;

@@ -149,7 +149,7 @@ vec3 calSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 cameraDir){
 
     // distance attenuation
     float distance = length(light.position - fragPos);
-    float luminosity = 1.0 / (light.constant + light.linear * distance + light.quadratic * distance * distance);// 光强衰减系数
+    float luminosity = 1.0 / (light.constant + light.linear * distance + light.quadratic * distance * distance);
 
     // direction attenuation
     float theta = dot(lightDir, -light.direction);

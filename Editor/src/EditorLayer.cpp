@@ -41,7 +41,7 @@ void EditorLayer::OnAttach() {
     glGenTextures(1, &m_NormalMapTex);
     int width, height, channels;
     stbi_set_flip_vertically_on_load(1);
-    stbi_uc* data = stbi_load("../../../Assets/Textures/teapot_normal.png", &width, &height, &channels, 0);
+    stbi_uc* data = stbi_load(m_NormalMapFilePath.c_str(), &width, &height, &channels, 0);
 
     glBindTexture(GL_TEXTURE_2D, m_NormalMapTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -56,7 +56,7 @@ void EditorLayer::OnAttach() {
     glGenTextures(1, &m_HeightMapTex);
     //int width, height, channels;
     stbi_set_flip_vertically_on_load(1);
-    data = stbi_load("../../../Assets/Textures/teapot_disp.png", &width, &height, &channels, 0);
+    data = stbi_load(m_DisplacmentFilePath.c_str(), &width, &height, &channels, 0);
 
     glBindTexture(GL_TEXTURE_2D, m_HeightMapTex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0,GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -69,8 +69,8 @@ void EditorLayer::OnAttach() {
 
     stbi_image_free(data);
 
-    m_Plane = new Model("../../../Assets/Models/plane.glb");
-    m_LightModel = new Model("../../../Assets/Models/SpotLight/light.obj");
+    m_Plane = new Model("../../Assets/Models/plane.glb");
+    m_LightModel = new Model("../../Assets/Models/SpotLight/light.obj");
 
     glGenTextures(1, &m_DepthMapTex);
     glBindTexture(GL_TEXTURE_2D, m_DepthMapTex);

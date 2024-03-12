@@ -65,12 +65,16 @@ uniform mat4 u_ViewProjection;
 uniform sampler2D displacementMap;
 uniform float displacementScale;
 
+uniform bool hasDisplacement = false;
+
 void main(){
     vec3 pos = gl_TessCoord.x * tes_in[0].Position + gl_TessCoord.y * tes_in[1].Position + gl_TessCoord.z * tes_in[2].Position;
     vec2 texCoords = gl_TessCoord.x * tes_in[0].TexCoords + gl_TessCoord.y * tes_in[1].TexCoords + gl_TessCoord.z * tes_in[2].TexCoords;
 
+    vec3 displacedPosition;
     float displacement = texture(displacementMap, texCoords).r;
-    vec3 displacedPosition = pos + vec3(0.0, displacement * displacementScale, 0.0);
+    displacedPosition = pos + vec3(0.0, displacement * displacementScale, 0.0);
+   
 
     vec4 worldPosition = u_Model * vec4(displacedPosition, 1.0);
     gl_Position = u_ViewProjection * vec4(worldPosition.xyz, 1.0);

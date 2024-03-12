@@ -35,20 +35,20 @@ public:
     void OnImGuiRender() override;
 
 private:
-    std::string m_NormalMapFilePath, m_DisplacmentFilePath = "../../../Assets/Texture/teapot_disp.png";
+    std::string m_NormalMapFilePath, m_DisplacmentFilePath;
 
     GLuint m_NormalMapTex, m_HeightMapTex;
 
-    Ref<NativeOpenGLShader> m_DepthMap = CreateRef<NativeOpenGLShader>("../../../Shaders/Shadow/ShadowDepth.glsl");
+    Ref<NativeOpenGLShader> m_DepthMap = CreateRef<NativeOpenGLShader>("../../Shaders/Shadow/ShadowDepth.glsl");
 
     Ref<NativeOpenGLShader> m_QuadShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/NormalMapping/NormalMapping.glsl");
+        "../../Shaders/NormalMapping/NormalMapping.glsl");
 
     Ref<NativeOpenGLShader> m_LineShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/NormalMapping/Line.glsl");
+        "../../Shaders/NormalMapping/Line.glsl");
 
     Ref<NativeOpenGLShader> m_BasicShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/BasicShader.glsl");
+        "../../Shaders/BasicShader.glsl");
 
 
     Model *m_LightModel, *m_Plane;
@@ -67,12 +67,13 @@ private:
     float azimuth = 20.0f;
     float elevation = 30.0f;
     float radius = 30.0f;
-    float heightScale = 0.05f;
+    float heightScale = 0.0f;
     int outerLevel = 32;
     int innerLevel = 32;
     bool ctrlPressed = false;
     bool altPressed = false;
     bool spacePressed = false;
+    bool hasDisplacement = false;
     glm::vec2 lastMousePos{};
     float m_Sensitivity = 0.03f;
     float m_Reflectivity = 0.5f;

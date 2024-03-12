@@ -1,5 +1,5 @@
 #pragma once
-
+#define GLM_ENABLE_EXPERIMENTAL
 #include "GLCore/Core/Timestep.h"
 #include "GLCore/Events/Event.h"
 #include "GLCore/Events/MouseEvent.h"

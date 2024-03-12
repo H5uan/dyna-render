@@ -21,7 +21,7 @@ using namespace GLCore;
 using namespace GLCore::Utils;
 
 EditorLayer::EditorLayer(std::string obj_file_path): m_ObjFilePath(std::move(obj_file_path)),
-                                                     m_EditorCamera(45.0f, 16.0f / 9.0f, 0.1f, 300.0f),
+                                                     m_EditorCamera(45.0f, 16.0f / 9.0f, 0.1f, 500.0f),
                                                      m_Light(60.f, 16.0f / 9.0f, 0.5f, 40.f) {
 }
 

@@ -107,57 +107,6 @@ void EditorLayer::OnEvent(Event&event) {
 }
 
 void EditorLayer::OnUpdate(const Timestep ts) {
-    /***
-    m_EditorCamera.OnUpdate(ts);
-    m_Light.OnUpdate(ts);
-
-    //RenderCommand::Init();
-    RenderCommand::DepthTest(true);
-
-    RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1});
-    RenderCommand::Clear();
-
-    glm::mat4 lightSpaceVP = m_Light.GetViewProjection();
-    m_DepthMap->Bind();
-    m_DepthMap->SetMat4("u_Model", glm::mat4(1.f));
-    m_DepthMap->SetMat4("u_ViewProjection", lightSpaceVP);
-
-    glViewport(0, 0, m_Light.GetViewportSize().first, m_Light.GetViewportSize().second);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_DepthMapFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    m_Plane->Draw(*m_DepthMap);
-    m_Teapot->Draw(*m_DepthMap);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    m_ShadowMapping->Bind();
-    glm::mat4 model = glm::mat4(1.f);
-    m_ShadowMapping->SetMat4("u_Model", model);
-    m_ShadowMapping->SetMat4("u_ViewProjection", m_EditorCamera.GetViewProjection());
-    m_ShadowMapping->SetMat4("u_LightSpaceMVPMat", m_Light.GetViewProjection());
-    m_ShadowMapping->SetFloat3("u_CameraPos", m_EditorCamera.GetPosition());
-    m_ShadowMapping->SetFloat3("material.color", m_Material.m_Color);
-    m_ShadowMapping->SetFloat("material.shininess", m_Material.m_Shininess);
-    glBindTextureUnit(0, m_Framebuffer->GetDepthAttachmentRendererID());
-    m_ShadowMapping->SetInt("u_ShadowMap", 0);
-    m_ShadowMapping->SetFloat3("spotLight.direction", m_Light.GetForwardDirection());
-    m_ShadowMapping->SetFloat3("spotLight.position", m_Light.GetPosition());
-    m_ShadowMapping->SetFloat("spotLight.innerCos", m_Light.innerCos);
-    m_ShadowMapping->SetFloat("spotLight.OuterCos", m_Light.outerCos);
-    m_ShadowMapping->SetFloat("spotLight.constant", m_Light.constant);
-    m_ShadowMapping->SetFloat("spotLight.linear", m_Light.linear);
-    m_ShadowMapping->SetFloat("spotLight.quadratic", m_Light.quadratic);
-    m_ShadowMapping->SetFloat3("spotLight.ambient", m_Light.ambient);
-    m_ShadowMapping->SetFloat3("spotLight.diffuse", m_Light.diffuse);
-    m_ShadowMapping->SetFloat3("spotLight.specular", m_Light.specular);
-    m_Teapot->Draw(*m_ShadowMapping);
-    m_ShadowMapping->SetMat4("u_Model", glm::scale(model, glm::vec3(2.f, 2.f, 2.f)));
-    m_Plane->Draw(*m_ShadowMapping);
-    m_ShadowMapping->Unbind();
-***/
-
 
     m_EditorCamera.OnUpdate(ts);
     m_Light.OnUpdate(ts);

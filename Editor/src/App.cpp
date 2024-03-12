@@ -11,7 +11,7 @@ public:
 };
 
 int main(int argc, char** argv) {
-    std::string obj_file_path = "../../../Assets/Models/teapot.obj";
+    std::string obj_file_path = "../../Assets/Models/teapot.obj";
     if (argc > 1) {
         obj_file_path = argv[1];
     }

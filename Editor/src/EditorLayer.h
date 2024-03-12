@@ -36,15 +36,15 @@ public:
 private:
     std::string m_ObjFilePath;
 
-    Ref<NativeOpenGLShader> m_DepthMap = CreateRef<NativeOpenGLShader>("../../../Shaders/Shadow/ShadowDepth.glsl");
+    Ref<NativeOpenGLShader> m_DepthMap = CreateRef<NativeOpenGLShader>("../../Shaders/Shadow/ShadowDepth.glsl");
     Ref<NativeOpenGLShader> m_ShadowMapping = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/Shadow/ShadowMapping.glsl");
+        "../../Shaders/Shadow/ShadowMapping.glsl");
 
     Ref<NativeOpenGLShader> m_PlaneShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/Shadow/DebugPlane.glsl");
+        "../../Shaders/Shadow/DebugPlane.glsl");
 
     Ref<NativeOpenGLShader> m_BasicShader = CreateRef<NativeOpenGLShader>(
-        "../../../Shaders/BasicShader.glsl");
+        "../../Shaders/BasicShader.glsl");
 
     GLuint m_CubeMap;
     Model *m_LightModel, *m_Plane, *m_Teapot;

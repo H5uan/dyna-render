@@ -36,8 +36,8 @@ void EditorLayer::OnAttach() {
     m_Framebuffer = Framebuffer::Create(fbSpec);
 
     m_Teapot = new Model(m_ObjFilePath);
-    m_Plane = new Model("../../../Assets/Models/plane.obj");
-    m_LightModel = new Model("../../../Assets/Models/SpotLight/light.obj");
+    m_Plane = new Model("../../Assets/Models/plane.obj");
+    m_LightModel = new Model("../../Assets/Models/SpotLight/light.obj");
 
     glGenTextures(1, &m_DepthMapTex);
     glBindTexture(GL_TEXTURE_2D, m_DepthMapTex);

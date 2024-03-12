@@ -524,5 +524,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-/extern/vcpkg/
 /build/
